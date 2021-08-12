@@ -1,0 +1,130 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#define endl '\n'
+
+using namespace std;
+
+string username;
+class Encrypto{
+private:
+	string Data(string media,string word)
+	{
+       string pass="";
+       int bar = (int)(username[0]+username[1])%26;
+       pass+='A'+bar;
+       pass+=media[1]+1;
+       pass+=(bar+32)*2;
+       pass+=word[1]-3;
+       pass+=(media[0]>='a'?'A'+media[0]-'a':media[0]);
+       for (int i = 1; i <= 10 ; ++i)
+       {
+       	  if(i%2)
+       	  {
+       	  	pass+=(81+bar-i);
+       	  }
+       	  else 
+       	  	pass+=(81+bar+i);
+       }
+       pass+=word[0];
+       return pass;
+	}
+
+public:
+	Encrypto()
+	{
+		cout<<"\nWelcome to the ENCRYPTION of your Social Media Password.\n";
+		cout<<"Please choose a word that is easy for you to remember.\n";
+		cout<<"We will make you a very strong password.\n";
+		cout<<"Please Enter the name of the Website: ";
+		string media;
+		while(1)
+		{
+			cin>>media;
+			if(media.size()==1)
+			{
+				cout<<"\nFull Site Name Please: ";
+			}
+			else 
+				break;
+		}
+		string word;
+		while(1)
+		{
+			cout<<"Chosen Word: ";
+			cin>>word;
+			if(word.size()==1)
+			{
+				cout<<"\nBigger Word Please: ";
+			}
+			else 
+				break;
+		}
+		string Enc_pass = Data(media,word);
+		cout<<"Your Encrypted Password is: "<<Enc_pass<<endl;
+	}
+
+};
+
+bool IsLoggedIn()
+{
+	string password, un, pw;
+    int log;
+    cout<<"1.Login acc.\n2.Create acc.\nEnter Choice: ";
+    cin>>log;
+    if(log==1){
+	cout << "Enter Username: ";
+	cin >> username;
+	cout << "Enter Password: ";
+	cin >> password; }
+	else 
+    { 
+    	cin.ignore();
+        fstream file;
+    	file.open("username.txt");
+       	cout<<"Username: ";
+    	getline(cin,username);
+    	string as;
+    	while(getline(file,as))
+    	{
+    		if(as==username)
+    		{
+    			cout<<"Username Taken\nPlease Enter another : ";
+    	        getline(cin,username);
+    	        file.close();
+    	        file.open("username.txt");
+    		}
+    	}
+    	file.close();
+    	file.open("username.txt",ios::app);
+    	file<<username+'\n';
+    	file.close();
+    	file.open("password.txt",ios::app);
+    	cout<<"Password: ";
+    	cin>>password;
+    	file<<password+'\n';
+    	file.close();
+    	IsLoggedIn();
+    }
+	ifstream read("username.txt");
+	ifstream read1("password.txt");
+	while(getline(read,un)&&getline(read1,pw))
+	{
+		if(un==username && pw==password)
+			return true;
+	}
+	return false;
+}
+int main()
+{
+	if (IsLoggedIn())
+	{
+		cout << "Successfully logged in!\n";
+		Encrypto obj;
+	}
+	else
+	{
+		cout << "False login!";
+	}
+	return 0;
+} 
